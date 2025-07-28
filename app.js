@@ -1,25 +1,23 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 require('dotenv').config();
 
-const productRoutes = require('./routes/products');
-const ordersRoutes = require('./routes/orders');
-const customerRoutes = require('./routes/customers');
-const orderDetailsRoutes = require('./routes/orderDetails');
+const swaggerDocument = YAML.load('./swagger.yaml');
+
+
 const app = express();
-const port = process.env.PORT || 3000;
-
 app.use(express.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Routes
-app.use('/products', productRoutes);
-app.use('/orders', ordersRoutes);
-app.use('/customers', customerRoutes);
-app.use('/order-details', orderDetailsRoutes);
+app.use('/products', require('./routes/products'));
+app.use('/orders', require('./routes/orders'));
+app.use('/customers', require('./routes/customers'));
+app.use('/order-details', require('./routes/orderDetails'));
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Online Retail API');
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server running at http://localhost:${port}`));

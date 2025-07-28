@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Online Retail API
+  version: 1.0.0
+  description: API for managing products, customers, orders, and order details
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /products:
+    get:
+      summary: Get all products
+      responses:
+        '200':
+          description: A list of products
+    post:
+      summary: Add a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                name:
+                  type: string
+                unit_price:
+                  type: number
+                stock:
+                  type: integer
+      responses:
+        '201':
+          description: Product created
+
+  /products/{id}:
+    get:
+      summary: Get a product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product found
+        '404':
+          description: Product not found
+    put:
+      summary: Update a product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                unit_price:
+                  type: number
+                stock:
+                  type: integer
+      responses:
+        '200':
+          description: Product updated
+    delete:
+      summary: Delete a product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product deleted
+
+  /orders:
+    get:
+      summary: Get all orders
+      responses:
+        '200':
+          description: A list of orders
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                customer_id:
+                  type: integer
+                order_date:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: Order created
+
+  /customers:
+    get:
+      summary: Get all customers
+      responses:
+        '200':
+          description: A list of customers
+    post:
+      summary: Add a new customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer_id:
+                  type: integer
+                country:
+                  type: string
+      responses:
+        '201':
+          description: Customer created
+
+  /order-details:
+    get:
+      summary: Get all order details
+      responses:
+        '200':
+          description: A list of order details
+    post:
+      summary: Add a new order detail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                product_id:
+                  type: string
+                quantity:
+                  type: integer
+      responses:
+        '201':
+          description: Order detail created
