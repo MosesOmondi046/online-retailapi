@@ -26,21 +26,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 3. Top N Best-Selling Products
-CREATE OR REPLACE FUNCTION get_top_selling_products(limit_num INT)
-RETURNS TABLE(product_id VARCHAR, name TEXT, total_quantity INT) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT p.product_id, p.name, SUM(od.quantity) as total_quantity
-    FROM order_details od
-    JOIN products p ON od.product_id = p.product_id
-    GROUP BY p.product_id, p.name
-    ORDER BY total_quantity DESC
-    LIMIT limit_num;
-END;
-$$ LANGUAGE plpgsql;
-
--- 4. Average Order Value
+-- 3. Average Order Value
 CREATE OR REPLACE FUNCTION get_average_order_value()
 RETURNS NUMERIC AS $$
 DECLARE
@@ -58,3 +44,21 @@ BEGIN
     RETURN COALESCE(avg_value, 0);
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- Calling the functions
+SELECT get_total_sales('2024-01-01', '2024-12-31');
+SELECT * FROM get_customer_orders('10001');
+SELECT get_average_order_value();
+
+
+
+
+
+
+
+
+
+
+
+
