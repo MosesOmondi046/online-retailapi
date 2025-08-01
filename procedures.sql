@@ -45,12 +45,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 4. Calculating daily sales
+CREATE OR REPLACE FUNCTION get_daily_sales(report_date DATE)
+RETURN TABLE(sale_date DATE, total_sales NUMERIC, order_count BIGINT) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        DATE(i.invoice_date) AS sale_date,
+        SUM(ii.line_total) AS total_sales,
+        COUNT(DISTINCT i.invoice_no) AS order_count
+    FROM invoice i
+    JOIN invoice_items ii ON i.invoice_no = ii.invoice_no
+    WHERE DATE(i.invoice_date) = report_date
+    GROUP BY DATE(i.invoice_date);
+END;
+$$ LANGUAGE plpgsql;
 
 -- Calling the functions
 SELECT get_total_sales('2024-01-01', '2024-12-31');
 SELECT * FROM get_customer_orders('10001');
 SELECT get_average_order_value();
-
+SELECT * FROM get_daily_sales('2024-06-06');
 
 
 
